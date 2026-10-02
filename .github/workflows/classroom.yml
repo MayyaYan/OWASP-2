@@ -1,0 +1,97 @@
+name: GitHub Classroom — Автопроверка
+
+on:
+  push:
+  workflow_dispatch:
+
+permissions:
+  checks: write
+  actions: read
+  contents: read
+
+jobs:
+  autograding:
+    runs-on: ubuntu-latest
+    # не запускать на коммиты бота Classroom
+    if: github.actor != 'github-classroom[bot]'
+    steps:
+      - name: Получить код
+        uses: actions/checkout@v4
+
+      - name: Установить Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.x"
+
+      - name: Установить зависимости
+        run: pip install pyyaml --quiet
+
+      - name: Отчёт заполнен
+        id: report
+        uses: classroom-resources/autograding-command-grader@v1
+        with:
+          test-name: "Отчёт заполнен"
+          command: "python tests/check.py report"
+          timeout: 1
+          max-score: 10
+
+      - name: Скриншоты приложены
+        id: screenshots
+        uses: classroom-resources/autograding-command-grader@v1
+        with:
+          test-name: "Скриншоты приложены (мин. 5)"
+          command: "python tests/check.py screenshots"
+          timeout: 1
+          max-score: 10
+
+      - name: Сценарий 1 — IDOR
+        id: idor
+        uses: classroom-resources/autograding-command-grader@v1
+        with:
+          test-name: "Сценарий 1 — IDOR"
+          command: "python tests/check.py idor"
+          timeout: 1
+          max-score: 15
+
+      - name: Сценарий 2 — Forced Browsing
+        id: forced
+        uses: classroom-resources/autograding-command-grader@v1
+        with:
+          test-name: "Сценарий 2 — Forced Browsing"
+          command: "python tests/check.py forced"
+          timeout: 1
+          max-score: 15
+
+      - name: Сценарий 3 — Privilege Escalation
+        id: privesc
+        uses: classroom-resources/autograding-command-grader@v1
+        with:
+          test-name: "Сценарий 3 — Privilege Escalation"
+          command: "python tests/check.py privesc"
+          timeout: 1
+          max-score: 15
+
+      - name: Сценарий 4 — JWT
+        id: jwt
+        uses: classroom-resources/autograding-command-grader@v1
+        with:
+          test-name: "Сценарий 4 — анализ JWT"
+          command: "python tests/check.py jwt"
+          timeout: 1
+          max-score: 10
+
+      - name: Классификация OWASP
+        id: category
+        uses: classroom-resources/autograding-command-grader@v1
+        with:
+          test-name: "Классификация по OWASP Top 10:2025"
+          command: "python tests/check.py category"
+          timeout: 1
+          max-score: 10
+
+      - name: Итоговый отчёт автопроверки
+        uses: classroom-resources/autograding-grading-reporter@v1
+        env:
+          REPORT_RESULTS: "${{ steps.report.outputs.result }},${{ steps.screenshots.outputs.result }},${{ steps.idor.outputs.result }},${{ steps.forced.outputs.result }},${{ steps.privesc.outputs.result }},${{ steps.jwt.outputs.result }},${{ steps.category.outputs.result }}"
+        with:
+          runners: report,screenshots,idor,forced,privesc,jwt,category
