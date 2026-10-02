@@ -1,0 +1,74 @@
+{
+  "tests": [
+    {
+      "name": "Отчёт заполнен",
+      "setup": "pip install pyyaml --quiet",
+      "run": "python tests/check.py report",
+      "input": "",
+      "output": "PASS",
+      "comparison": "included",
+      "timeout": 1,
+      "points": 10
+    },
+    {
+      "name": "Скриншоты приложены (мин. 5)",
+      "setup": "",
+      "run": "python tests/check.py screenshots",
+      "input": "",
+      "output": "PASS",
+      "comparison": "included",
+      "timeout": 1,
+      "points": 10
+    },
+    {
+      "name": "Сценарий 1 — IDOR",
+      "setup": "pip install pyyaml --quiet",
+      "run": "python tests/check.py idor",
+      "input": "",
+      "output": "PASS",
+      "comparison": "included",
+      "timeout": 1,
+      "points": 15
+    },
+    {
+      "name": "Сценарий 2 — Forced Browsing",
+      "setup": "pip install pyyaml --quiet",
+      "run": "python tests/check.py forced",
+      "input": "",
+      "output": "PASS",
+      "comparison": "included",
+      "timeout": 1,
+      "points": 15
+    },
+    {
+      "name": "Сценарий 3 — Privilege Escalation",
+      "setup": "pip install pyyaml --quiet",
+      "run": "python tests/check.py privesc",
+      "input": "",
+      "output": "PASS",
+      "comparison": "included",
+      "timeout": 1,
+      "points": 15
+    },
+    {
+      "name": "Сценарий 4 — анализ JWT",
+      "setup": "pip install pyyaml --quiet",
+      "run": "python tests/check.py jwt",
+      "input": "",
+      "output": "PASS",
+      "comparison": "included",
+      "timeout": 1,
+      "points": 10
+    },
+    {
+      "name": "Классификация по OWASP Top 10:2025",
+      "setup": "pip install pyyaml --quiet",
+      "run": "python tests/check.py category",
+      "input": "",
+      "output": "PASS",
+      "comparison": "included",
+      "timeout": 1,
+      "points": 10
+    }
+  ]
+}
