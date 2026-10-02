@@ -1,0 +1,22 @@
+{
+  "name": "OWASP Access Control Lab",
+  "image": "mcr.microsoft.com/devcontainers/base:ubuntu",
+  "features": {
+    "ghcr.io/devcontainers/features/docker-in-docker:2": {}
+  },
+  "forwardPorts": [3000],
+  "portsAttributes": {
+    "3000": {
+      "label": "Juice Shop (мишень)",
+      "onAutoForward": "openBrowser"
+    }
+  },
+  "postStartCommand": "docker rm -f juice-shop 2>/dev/null; docker run -d --rm -p 3000:3000 --name juice-shop bkimminich/juice-shop && echo '✅ Juice Shop запускается на порту 3000. Откройте вкладку PORTS.'",
+  "customizations": {
+    "vscode": {
+      "extensions": [
+        "humao.rest-client"
+      ]
+    }
+  }
+}
